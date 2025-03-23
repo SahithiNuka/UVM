@@ -1,7 +1,6 @@
 #Makefile for UVM Testbench - Lab 10
 
 # SIMULATOR = Questa for Mentor's Questasim
-# SIMULATOR = VCS for Synopsys's VCS
 
 SIMULATOR = Questa
 
@@ -161,57 +160,3 @@ clean_Questa:
 	clear
 
 # ----------------------------- End of Definitions for Mentor's Questa Specific Targets -------------------------------#
-
-# ----------------------------- Start of Definitions for Synopsys's VCS Specific Targets -------------------------------#
-
-sv_cmp_VCS:
-	vcs -l vcs.log -timescale=1ns/1ps -sverilog -ntb_opts uvm -debug_access+all -full64 -kdb  -lca -P $(FSDB_PATH)/novas.tab $(FSDB_PATH)/pli.a $(RTL) $(INC) $(SVTB2) $(SVTB1)
-		      
-run_test_VCS:	clean  sv_cmp_VCS
-	./simv -a vcs.log +fsdbfile+wave1.fsdb -cm_dir ./mem_cov1 +ntb_random_seed_automatic +UVM_TESTNAME=router_test 
-	urg -dir mem_cov1.vdb -format both -report urgReport1
-	
-run_test1_VCS:  	
-	./simv -a vcs.log +fsdbfile+wave2.fsdb -cm_dir ./mem_cov2 +ntb_random_seed_automatic +UVM_TESTNAME=small_pkt_test 
-	urg -dir mem_cov2.vdb -format both -report urgReport2
-	
-run_test2_VCS:	
-	./simv -a vcs.log +fsdbfile+wave3.fsdb -cm_dir ./mem_cov3 +ntb_random_seed_automatic +UVM_TESTNAME=ram_odd_addr_test 
-	urg -dir mem_cov3.vdb -format both -report urgReport3
-	
-run_test3_VCS:	
-	./simv -a vcs.log +fsdbfile+wave4.fsdb -cm_dir ./mem_cov4 +ntb_random_seed_automatic +UVM_TESTNAME=ram_even_addr_test 
-	urg -dir mem_cov4.vdb -format both -report urgReport4
-	
-run_test4_VCS:	
-	./simv -a vcs.log +fsdbfile+wave4.fsdb -cm_dir ./mem_cov5 +ntb_random_seed_automatic +UVM_TESTNAME=ram_rand_addr_test 
-	urg -dir mem_cov5.vdb -format both -report urgReport4
-	
-view_wave1_VCS: 
-	verdi -ssf wave1.fsdb
-	
-view_wave2_VCS: 
-	verdi -ssf wave2.fsdb
-
-view_wave3_VCS: 
-	verdi -ssf wave3.fsdb
-
-view_wave4_VCS: 
-	verdi -ssf wave4.fsdb	
-
-view_wave5_VCS:
-	verdi -ssf wave5.fsdb
-	
-report_VCS:
-	urg -dir mem_cov1.vdb mem_cov2.vdb mem_cov3.vdb mem_cov4.vdb mem_cov5.vdb -dbname merged_dir/merged_test -format both -report urgReport
-
-regress_VCS: clean_VCS sv_cmp_VCS run_test_VCS run_test1_VCS run_test2_VCS run_test3_VCS run_test4_VCS report_VCS
-
-cov_VCS:
-	verdi -cov -covdir merged_dir.vdb
-
-clean_VCS:
-	rm -rf simv* csrc* *.tmp *.vpd *.vdb *.key *.log *hdrs.h urgReport* *.fsdb novas* verdi*
-	clear
-
-# ----------------------------- END of Definitions for Synopsys's VCS Specific Targets -------------------------------#
